@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+    <style>
+      h2 {
+        color: blue;
+        font-size: 20px;
+      }
+      h3 {
+        color: brown;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form action="/submit">
+        <div class="row">
+          <div class="col-sm-6">
+            <input
+              type="text"
+              id="form-text"
+              placeholder="Type a city......"
+              autocomplete="off"
+              autofocus="on"
+            />
+          </div>
+          <div class="col-sm-3">
+            <input type="submit" placeholder="Search" />
+          </div>
+          <div class="col-sm-3">
+            <button>Current</button>
+          </div>
+        </div>
+      </form>
+
+      <h1>Weather in Lagos</h1>
+      <h2>Monday 01.25</h2>
+      <h3><span class="tem">28</span><span class="indent">°C</span></h3>
+      <a href="indent"></a>
+      <a href="inden"></a>
+
+      <h4>
+        Humidity: <span class="Humidity">79</span>%<br />
+        Wind: <span class="Wind">5</span> Km/h <br />
+      </h4>
+
+      <script>
+        let apiKey = "50af66775d6be5518d0c127157771584";
+        let apiUrl =
+          "https://api.openweathermap.org/data/2.5/weather?units=metric";
+
+        let now = new Date();
+        let h2 = document.querySelector("h2");
+        let hours = now.getHours();
+        let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        let day = days[now.getDay()];
+        let minutes = now.getMinutes();
+
+        h2.innerHTML = `${day} ${hours}:${minutes}`;
+
+        let formtext = document.querySelector("#form-text");
+        let humid = document.querySelector(".Humidity");
+        let precip = document.querySelector(".Precipitation");
+        let wind = document.querySelector(".Wind");
+        let h1 = document.querySelector("h1");
+        let tem = document.querySelector(".tem");
+        let form = document.querySelector("form");
+
+        function showWeather(response) {
+          humid.innerHTML = `${response.data.main.humidity}`;
+          wind.innerHTML = `${response.data.wind.speed}`;
+          let temperature = Math.round(response.data.main.temp);
+          tem.innerHTML = `${temperature}`;
+        }
+
+        function climate(event) {
+          event.preventDefault();
+          h1.innerHTML = `Weather in ${formtext.value}`;
+          axios
+            .get(`${apiUrl}&appid=${apiKey}&q=${formtext.value}`)
+            .then(showWeather);
+        }
+
+        form.addEventListener("submit", climate);
+
+        function showPosition(position) {
+          h1.innerHTML = "Weather in your current location";
+          let latitude = position.coords.latitude;
+          let longitude = position.coords.longitude;
+          axios
+            .get(`${apiUrl}&appid=${apiKey}&lat=${latitude}&lon=${longitude}`)
+            .then(showWeather);
+        }
+
+        function currentPosition() {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
+
+        let button = document.querySelector("button");
+        button.addEventListener("click", currentPosition);
+      </script>
+    </div>
+  </body>
+</html>
